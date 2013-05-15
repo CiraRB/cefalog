@@ -43,5 +43,16 @@ public final class LogDB {
          * <P>Type: TEXT</P>
          */
         public static final String NOTES = "notes";
+        /**
+         * The timestamp for when the note was created
+         * <P>Type: INTEGER (long from System.curentTimeMillis())</P>
+         */
+        public static final String CREATED_DATE = "created";
+
+        /**
+         * The timestamp for when the note was last modified
+         * <P>Type: INTEGER (long from System.curentTimeMillis())</P>
+         */
+        public static final String MODIFIED_DATE = "modified";
     }
 }

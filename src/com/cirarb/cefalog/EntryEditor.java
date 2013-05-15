@@ -3,6 +3,7 @@ package com.cirarb.cefalog;
 import java.text.ParseException;
 import java.util.Calendar;
 
+import com.cirarb.cefalog.LogDB.EntryColumns;
 import com.cirarb.cefalog.fragments.DatePickerFragment;
 import com.cirarb.cefalog.fragments.TimePickerFragment;
 
@@ -14,11 +15,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.EditText;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.NavUtils;
 import android.text.format.DateFormat;
 import android.annotation.TargetApi;
+import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Build;
 
 public class EntryEditor extends FragmentActivity {
@@ -30,6 +34,7 @@ public class EntryEditor extends FragmentActivity {
 	
 	private Uri mUri;
 	private int mState;
+	private Cursor mCursor;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -85,6 +90,16 @@ public class EntryEditor extends FragmentActivity {
 		case android.R.id.home:
 			NavUtils.navigateUpFromSameTask(this);
 			return true;
+			
+		case R.id.action_save:
+            try {
+				saveEntry();
+				finish();
+			} catch (ParseException e) {
+				Log.e(TAG, "ParseException: " + e.getMessage());
+	            finish();
+			}
+            break;
 		}
 		return super.onOptionsItemSelected(item);
 	}
@@ -139,4 +154,33 @@ public class EntryEditor extends FragmentActivity {
         dpf.setArguments(args);
 		dpf.show(getSupportFragmentManager(), "timePicker");
 	}
+	
+	private final void saveEntry() throws ParseException {
+        if (mCursor != null) {
+            // Get out updates into the provider.
+            ContentValues values = new ContentValues();
+
+            // Bump the modification time to now.
+            values.put(EntryColumns.MODIFIED_DATE, System.currentTimeMillis());
+
+            // Write our text back into the provider.
+            EditText etNotes = (EditText)findViewById(R.id.etNotes);
+            Button btnDate = (Button)findViewById(R.id.btnDate);
+            Button btnTime = (Button)findViewById(R.id.btnTime);
+            
+            values.put(EntryColumns.DATE, Utils.getDateTime(getApplicationContext(), 
+            		btnDate.getText().toString(), btnTime.getText().toString()));
+            values.put(EntryColumns.NOTES, etNotes.getText().toString());
+
+            // Commit all of our changes to persistent storage. When the update completes
+            // the content provider will notify the cursor of the change, which will
+            // cause the UI to be updated.
+            try {
+                getContentResolver().update(mUri, values, null, null);
+            } catch (NullPointerException e) {
+                Log.e(TAG, e.getMessage());
+            }
+            
+        }
+    }
 }

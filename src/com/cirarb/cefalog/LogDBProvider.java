@@ -26,7 +26,7 @@ public class LogDBProvider extends ContentProvider {
 	private static final String TAG = "LogDBProvider";
 	
 	private static final String DATABASE_NAME = "cefalog.db";
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 3;
     
     private static HashMap<String, String> sEntriesProjectionMap;
     
@@ -50,7 +50,9 @@ public class LogDBProvider extends ContentProvider {
         	sb.append("CREATE TABLE ").append(LogDB.ENTRIES_TABLE_NAME).append(" (");
         	sb.append(EntryColumns._ID).append(" INTEGER PRIMARY KEY,");
         	sb.append(EntryColumns.DATE).append(" INTEGER,");
-        	sb.append(EntryColumns.NOTES).append(" TEXT");
+        	sb.append(EntryColumns.NOTES).append(" TEXT,");
+        	sb.append(EntryColumns.CREATED_DATE).append(" INTEGER,");
+        	sb.append(EntryColumns.MODIFIED_DATE).append(" INTEGER");
         	sb.append(");");
         	
             db.execSQL(sb.toString());
@@ -132,6 +134,14 @@ public class LogDBProvider extends ContentProvider {
             values = new ContentValues();
         }
         
+        // Make sure that the fields are all set
+        Long now = Long.valueOf(System.currentTimeMillis());
+        if (values.containsKey(EntryColumns.CREATED_DATE) == false) {
+            values.put(EntryColumns.CREATED_DATE, now);
+        }
+        if (values.containsKey(EntryColumns.MODIFIED_DATE) == false) {
+            values.put(EntryColumns.MODIFIED_DATE, now);
+        }
         if (values.containsKey(EntryColumns.NOTES) == false) {
             values.put(EntryColumns.NOTES, "");
         }
@@ -156,6 +166,8 @@ public class LogDBProvider extends ContentProvider {
         sEntriesProjectionMap.put(EntryColumns._ID, EntryColumns._ID);
         sEntriesProjectionMap.put(EntryColumns.DATE, EntryColumns.DATE);
         sEntriesProjectionMap.put(EntryColumns.NOTES, EntryColumns.NOTES);
+        sEntriesProjectionMap.put(EntryColumns.CREATED_DATE, EntryColumns.CREATED_DATE);
+        sEntriesProjectionMap.put(EntryColumns.MODIFIED_DATE, EntryColumns.MODIFIED_DATE);
     }
     
     /*--------------------------------------*/
