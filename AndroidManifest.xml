@@ -13,8 +13,12 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
+        
+        <provider android:name="LogDBProvider"
+            android:authorities="com.cirarb.cefalog.provider.LogDB" />
+        
         <activity
-            android:name="CefalogActivity"
+            android:name="Cefalog"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -22,12 +26,28 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="NewEntryActivity"
-            android:label="@string/action_new_entry"
-            android:parentActivityName="com.cirarb.cefalog.CefalogActivity" >
+            android:name="EntryEditor"
+            android:label="@string/app_name"
+            android:parentActivityName="com.cirarb.cefalog.Cefalog" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.cirarb.cefalog.CefalogActivity" />
+                android:value="com.cirarb.cefalog.Cefalog" />
+            
+            <!-- This filter says that we can view or edit the data of a single entry. -->
+            <intent-filter android:label="@string/resolve_edit">
+                <action android:name="android.intent.action.VIEW" />
+                <action android:name="android.intent.action.EDIT" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="vnd.android.cursor.item/vnd.cefalog.entry" />
+            </intent-filter>
+                
+            <!-- This filter says that we can create a new entry. -->
+            <intent-filter>
+                <action android:name="android.intent.action.INSERT" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="vnd.android.cursor.dir/vnd.cefalog.entry" />
+            </intent-filter>
+
         </activity>
     </application>
 

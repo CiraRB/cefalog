@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">cefalog</string>
+    <string name="action_add_entry">Add entry</string>
     <string name="action_settings">Settings</string>
-    <string name="hello_world">Hello world!</string>
-    <string name="action_new_entry">new entry</string>
-    <string name="action_save">save</string>
+    <string name="action_save">Save</string>
     <string name="action_home">Home</string>
     <string name="action_back">Back</string>
-    <string name="Duration">Duration</string>
+    <string name="anything_else">Anything else?</string>
+    <string name="app_name">Cefalog</string>
+    <string name="duration">Duration</string>
+    <string name="resolve_edit">Resolve edit</string>
 
 </resources>

@@ -1,16 +1,26 @@
 package com.cirarb.cefalog;
 
+import com.cirarb.cefalog.LogDB.EntryColumns;
+
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
 import android.view.Menu;
 import android.view.MenuItem;
 
-public class CefalogActivity extends Activity {
+public class Cefalog extends Activity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		// If no data was given in the intent (because we were started
+        // as a MAIN activity), then use our default content provider.
+        Intent intent = getIntent();
+        if (intent.getData() == null) {
+            intent.setData(EntryColumns.CONTENT_URI);
+        }
+		
 		setContentView(R.layout.activity_cefalog);
 	}
 
@@ -23,8 +33,9 @@ public class CefalogActivity extends Activity {
 	
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
-			case R.id.action_new_entry:
-			    startActivity(new Intent(this, NewEntryActivity.class));
+			case R.id.action_add_entry:
+			    //startActivity(new Intent(this, EntryEditor.class));
+			    startActivity(new Intent(Intent.ACTION_INSERT, getIntent().getData()));
 			    return true;
 //		    case R.id.action_settings:
 //			    startActivity(new Intent(this, SettingsActivity.class));

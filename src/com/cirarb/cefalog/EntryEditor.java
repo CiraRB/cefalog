@@ -6,7 +6,9 @@ import java.util.Calendar;
 import com.cirarb.cefalog.fragments.DatePickerFragment;
 import com.cirarb.cefalog.fragments.TimePickerFragment;
 
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,15 +18,46 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.NavUtils;
 import android.text.format.DateFormat;
 import android.annotation.TargetApi;
+import android.content.Intent;
 import android.os.Build;
 
-public class NewEntryActivity extends FragmentActivity {
+public class EntryEditor extends FragmentActivity {
+	private static final String TAG = "EntryEditor";
+	
+	// The different distinct states the activity can be run in.
+    private static final int STATE_EDIT = 0;
+    private static final int STATE_INSERT = 1;
+	
+	private Uri mUri;
+	private int mState;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_new_entry);
+		
+		final Intent intent = getIntent();
+        final String action = intent.getAction();		
+		if (Intent.ACTION_INSERT.equals(action)) {
+            // Requested to insert: set that state, and create a new entry in the container.
+            mState = STATE_INSERT;
+            mUri = getContentResolver().insert(intent.getData(), null);
 
+            if (mUri == null) {
+                Log.e(TAG, "Failed to insert new entry into " + getIntent().getData());
+                finish();
+                return;
+            }
+
+            setResult(RESULT_OK, (new Intent()).setAction(mUri.toString()));
+
+        } else {
+            Log.e(TAG, "Unknown action, exiting");
+            finish();
+            return;
+        }
+		
+		setContentView(R.layout.activity_entry_editor);
+		
 		setupActionBar();
 		setupDateTimeButtons();
 	}
@@ -42,7 +75,7 @@ public class NewEntryActivity extends FragmentActivity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.new_entry, menu);
+		getMenuInflater().inflate(R.menu.entry_editor, menu);
 		return true;
 	}
 
