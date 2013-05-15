@@ -6,5 +6,8 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_new_entry">new entry</string>
     <string name="action_save">save</string>
+    <string name="action_home">Home</string>
+    <string name="action_back">Back</string>
+    <string name="Duration">Duration</string>
 
 </resources>
