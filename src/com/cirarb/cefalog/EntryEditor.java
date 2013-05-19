@@ -42,7 +42,11 @@ public class EntryEditor extends FragmentActivity {
 		
 		final Intent intent = getIntent();
         final String action = intent.getAction();		
-		if (Intent.ACTION_INSERT.equals(action)) {
+        if (Intent.ACTION_EDIT.equals(action)) {
+            // Requested to edit: set that state, and the data being edited.
+            mState = STATE_EDIT;
+            mUri = intent.getData();
+        } else if (Intent.ACTION_INSERT.equals(action)) {
             // Requested to insert: set that state, and create a new entry in the container.
             mState = STATE_INSERT;
             mUri = getContentResolver().insert(intent.getData(), null);
@@ -62,6 +66,8 @@ public class EntryEditor extends FragmentActivity {
         }
 		
 		setContentView(R.layout.activity_entry_editor);
+		
+		mCursor = getContentResolver().query(mUri, EntryColumns.PROJECTION, null, null, null);;
 		
 		setupActionBar();
 		setupDateTimeButtons();

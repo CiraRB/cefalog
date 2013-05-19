@@ -15,7 +15,8 @@
         android:theme="@style/AppTheme" >
         
         <provider android:name="LogDBProvider"
-            android:authorities="com.cirarb.cefalog.provider.LogDB" />
+            android:authorities="com.cirarb.cefalog.provider.LogDB"
+            android:exported="false" />
         
         <activity
             android:name="Cefalog"

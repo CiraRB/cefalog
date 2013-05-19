@@ -1,19 +1,28 @@
 package com.cirarb.cefalog;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.cirarb.cefalog.LogDB.EntryColumns;
+import com.cirarb.cefalog.fragments.EntriesFragment;
+import com.cirarb.cefalog.fragments.MyFragment;
 
 import android.os.Bundle;
-import android.app.Activity;
 import android.content.Intent;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
 
-public class Cefalog extends Activity {
+public class Cefalog extends FragmentActivity {
 
+	CefalogAdapter pageAdapter;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
+
 		// If no data was given in the intent (because we were started
         // as a MAIN activity), then use our default content provider.
         Intent intent = getIntent();
@@ -22,6 +31,11 @@ public class Cefalog extends Activity {
         }
 		
 		setContentView(R.layout.activity_cefalog);
+		
+		List<Fragment> fragments = getFragments();
+		pageAdapter = new CefalogAdapter(getSupportFragmentManager(), fragments);
+		ViewPager pager = (ViewPager)findViewById(R.id.viewpager);
+		pager.setAdapter(pageAdapter);
 	}
 
 	@Override
@@ -43,6 +57,18 @@ public class Cefalog extends Activity {
 		    default:
 		    	return super.onOptionsItemSelected(item);
 		}
+	}
+	
+	private List<Fragment> getFragments(){
+		  List<Fragment> fList = new ArrayList<Fragment>();
+		  
+		  fList.add(new EntriesFragment());
+		 
+		  fList.add(MyFragment.newInstance("Fragment 1"));
+		  fList.add(MyFragment.newInstance("Fragment 2")); 
+		  fList.add(MyFragment.newInstance("Fragment 3"));
+		 
+		  return fList;
 	}
 
 }

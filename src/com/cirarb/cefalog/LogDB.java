@@ -54,5 +54,11 @@ public final class LogDB {
          * <P>Type: INTEGER (long from System.curentTimeMillis())</P>
          */
         public static final String MODIFIED_DATE = "modified";
+        
+        public static final String[] PROJECTION = new String[] {
+        	EntryColumns._ID,
+            EntryColumns.DATE,
+            EntryColumns.NOTES
+        };
     }
 }

@@ -85,6 +85,10 @@ public class LogDBProvider extends ContentProvider {
         case ENTRIES:
             qb.setProjectionMap(sEntriesProjectionMap);
             break;
+        case ENTRY_ID:
+            qb.setProjectionMap(sEntriesProjectionMap);
+            qb.appendWhere(EntryColumns._ID + "=" + uri.getPathSegments().get(1));
+            break;
         default:
             throw new IllegalArgumentException("Unknown URI " + uri);
         }
@@ -157,6 +161,50 @@ public class LogDBProvider extends ContentProvider {
         throw new SQLException("Failed to insert row into " + uri);
 	}
     
+	@Override
+	public int update(Uri uri, ContentValues values, String where, String[] whereArgs) {
+		SQLiteDatabase db = mOpenHelper.getWritableDatabase();
+		
+        int count;
+        switch (sUriMatcher.match(uri)) {
+	        case ENTRIES:
+	            count = db.update(LogDB.ENTRIES_TABLE_NAME, values, where, whereArgs);
+	            break;
+	        case ENTRY_ID:
+	            String entryId = uri.getPathSegments().get(1);
+	            count = db.update(LogDB.ENTRIES_TABLE_NAME, values, EntryColumns._ID + "=" + entryId
+	                    + (!TextUtils.isEmpty(where) ? " AND (" + where + ')' : ""), whereArgs);
+	            break;
+	        default:
+	            throw new IllegalArgumentException("Unknown URI " + uri);
+        }
+
+        getContext().getContentResolver().notifyChange(uri, null);
+        return count;
+	}
+	
+	@Override
+	public int delete(Uri uri, String where, String[] whereArgs) {
+        SQLiteDatabase db = mOpenHelper.getWritableDatabase();
+        
+        int count;
+        switch (sUriMatcher.match(uri)) {
+	        case ENTRIES:
+	            count = db.delete(LogDB.ENTRIES_TABLE_NAME, where, whereArgs);
+	            break;
+	        case ENTRY_ID:
+	            String entryId = uri.getPathSegments().get(1);
+	            count = db.delete(LogDB.ENTRIES_TABLE_NAME, EntryColumns._ID + "=" + entryId
+	                    + (!TextUtils.isEmpty(where) ? " AND (" + where + ')' : ""), whereArgs);
+	            break;
+	        default:
+	            throw new IllegalArgumentException("Unknown URI " + uri);
+        }
+
+        getContext().getContentResolver().notifyChange(uri, null);
+        return count;
+	}
+    
     static {
         sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
         sUriMatcher.addURI(LogDB.AUTHORITY, LogDB.ENTRIES_TABLE_NAME, ENTRIES);
@@ -169,20 +217,5 @@ public class LogDBProvider extends ContentProvider {
         sEntriesProjectionMap.put(EntryColumns.CREATED_DATE, EntryColumns.CREATED_DATE);
         sEntriesProjectionMap.put(EntryColumns.MODIFIED_DATE, EntryColumns.MODIFIED_DATE);
     }
-    
-    /*--------------------------------------*/
-
-	@Override
-	public int delete(Uri uri, String selection, String[] selectionArgs) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public int update(Uri uri, ContentValues values, String selection,
-			String[] selectionArgs) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
     
 }
