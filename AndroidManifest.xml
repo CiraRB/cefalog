@@ -48,6 +48,13 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <data android:mimeType="vnd.android.cursor.dir/vnd.cefalog.entry" />
             </intent-filter>
+            
+            <!-- This filter says that we can view the data of a single type. -->
+            <intent-filter android:label="@string/resolve_edit">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="vnd.android.cursor.item/vnd.cefalog.type" />
+            </intent-filter>
 
         </activity>
     </application>

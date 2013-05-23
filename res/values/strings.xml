@@ -1,14 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="action_add_entry">Add entry</string>
-    <string name="action_settings">Settings</string>
-    <string name="action_save">Save</string>
-    <string name="action_home">Home</string>
+    <string name="action_add_entry">New entry</string>
+    <string name="action_add_type">New headache</string>
     <string name="action_back">Back</string>
-    <string name="anything_else">Anything else?</string>
+    <string name="action_delete">Delete</string>
+    <string name="action_home">Home</string>
+    <string name="action_save">Save</string>
+    <string name="action_settings">Settings</string>
     <string name="app_name">Cefalog</string>
-    <string name="duration">Duration</string>
+    <string name="error_value_empty">Value cannot be empty</string>
     <string name="resolve_edit">Resolve edit</string>
-
+    <string name="text_anything_else">Anything else?</string>
+    <string name="text_deleted">Deleted</string>
+    <string name="text_duration">Duration</string>
+    <string name="text_hours">hours</string>
+	<string name="text_intensity">Intensity</string>
+	<string name="text_other">Other&#8230;</string>
+	<string name="text_saved">Saved</string>
+	
+	<string-array name="array_duration">
+        <item name="ad_minutes">Minutes</item>
+        <item name="ad_hours">Hours</item>
+        <item name="ad_days">Days</item>
+    </string-array>
+    
 </resources>
