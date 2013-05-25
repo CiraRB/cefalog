@@ -2,13 +2,18 @@ package com.cirarb.cefalog.fragments;
 
 import com.cirarb.cefalog.LogDB.EntryColumns;
 
+import android.content.ContentUris;
+import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SimpleCursorAdapter;
+import android.view.View;
+import android.widget.ListView;
 
 public class EntriesFragment extends ListFragment 
 	implements LoaderManager.LoaderCallbacks<Cursor> {
@@ -31,6 +36,12 @@ public class EntriesFragment extends ListFragment
         
         getLoaderManager().initLoader(0, null, this);
     }
+    
+	@Override
+	public void onListItemClick(ListView l, View v, int position, long id) {
+		Uri entryUri = ContentUris.withAppendedId(getActivity().getIntent().getData(), id);
+		startActivity(new Intent(Intent.ACTION_EDIT, entryUri));
+	}
 
 	@Override
 	public Loader<Cursor> onCreateLoader(int id, Bundle args) {
@@ -54,4 +65,6 @@ public class EntriesFragment extends ListFragment
 	public void onLoaderReset(Loader<Cursor> loader) {
 		mAdapter.swapCursor(null);
 	}
+
+	
 }

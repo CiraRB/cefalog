@@ -25,11 +25,10 @@ public class DatePickerFragment extends DialogFragment
 		btn = (Button)getActivity().findViewById(id);
 		String date = btn.getText().toString();
 		if (date.length() > 0) {
-			java.text.DateFormat timeFormat = DateFormat.getTimeFormat(getActivity().getApplicationContext());
+			java.text.DateFormat dateFormat = DateFormat.getDateFormat(getActivity().getApplicationContext());
 			try {
-				c.setTime(timeFormat.parse(date));
+				c.setTime(dateFormat.parse(date));
 			} catch (ParseException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}

@@ -2,9 +2,7 @@ package com.cirarb.cefalog;
 
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
-
 import com.cirarb.cefalog.LogDB.EntryColumns;
 import com.cirarb.cefalog.LogDB.TypeColumns;
 import com.cirarb.cefalog.fragments.AddDialogFragment;
@@ -30,7 +28,6 @@ import android.widget.Toast;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.NavUtils;
-import android.text.format.DateFormat;
 import android.annotation.TargetApi;
 import android.content.ContentValues;
 import android.content.Intent;
@@ -42,6 +39,8 @@ public class EntryEditor extends FragmentActivity
 	private static final String TAG = "EntryEditor";
 	
 	ArrayAdapter<String> aaTypes;
+	Cursor cEdit;
+	Boolean bEdit = false;
 	
     Button btnDate;
     Button btnTime;
@@ -64,22 +63,21 @@ public class EntryEditor extends FragmentActivity
         sbIntensity = (SeekBar) findViewById(R.id.sbIntensity);
         etDuration = (EditText)findViewById(R.id.etDuration);
         spnDuration = (Spinner) findViewById(R.id.spnDuration);
+        
+        if (Intent.ACTION_EDIT.equals(getIntent().getAction())) {
+        	Uri uri = getIntent().getData();
+        	cEdit = getContentResolver().query(uri, EntryColumns.PROJECTION, null, null, null);
+        	if (cEdit.getCount() > 0) {
+        		cEdit.moveToFirst();
+        		bEdit = true;
+        	}
+        }
 
 		setupActionBar();
-		setupDateTimeButtons();
-		setupTypeSpinner();
-		setupIntensity();
+		setValues();
+		bindEvents();
 	}
 	
-	/**
-	 * Set up the {@link android.app.ActionBar}, if the API is available.
-	 */
-	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
-	private void setupActionBar() {
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-			getActionBar().setDisplayHomeAsUpEnabled(true);
-		}
-	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -152,38 +150,18 @@ public class EntryEditor extends FragmentActivity
 		}
 	}
 	
-	private void setupDateTimeButtons(){
-		java.text.DateFormat dateFormat = DateFormat.getDateFormat(getApplicationContext());
-		java.text.DateFormat timeFormat = DateFormat.getTimeFormat(getApplicationContext());
-		
-		Calendar c = Calendar.getInstance();
-		
-		btnDate.setText(dateFormat.format(c.getTime()));
-		btnDate.setOnClickListener(new OnClickListener() {
-            public void onClick(View v) {
-            	try {
-					showDatePickerDialog(R.id.btnDate);
-				} catch (ParseException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-            }
-        });
-		
-		btnTime.setText(timeFormat.format(c.getTime()));
-		btnTime.setOnClickListener(new OnClickListener() {
-            public void onClick(View v) {
-            	try {
-            		showTimePickerDialog(R.id.btnTime);
-				} catch (ParseException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-            }
-        });
+	
+	/**
+	 * Set up the {@link android.app.ActionBar}, if the API is available.
+	 */
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
+	private void setupActionBar() {
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+			getActionBar().setDisplayHomeAsUpEnabled(true);
+		}
 	}
 	
-	private void setupTypeSpinner() {
+	private void setValues() {
 		List<String> types = new ArrayList<String>();
         Cursor cursor = getContentResolver().query(
         		LogDB.TypeColumns.CONTENT_URI, TypeColumns.PROJECTION, null, null, null);
@@ -200,7 +178,50 @@ public class EntryEditor extends FragmentActivity
         aaTypes.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spnType.setAdapter(aaTypes);
         
-        spnType.setOnItemSelectedListener(new OnItemSelectedListener() {
+		DateTime dt;
+		
+		if (bEdit) {
+			dt = new DateTime(getApplicationContext(), 
+					cEdit.getLong(cEdit.getColumnIndex(EntryColumns.DATE)));
+        	spnType.setSelection(
+        			cEdit.getInt(cEdit.getColumnIndex(EntryColumns.TYPE)));
+			sbIntensity.setProgress(
+					cEdit.getInt(cEdit.getColumnIndex(EntryColumns.INTENSITY)));
+			etDuration.setText(
+					cEdit.getString(cEdit.getColumnIndex(EntryColumns.DURATION_TIME)));
+			spnDuration.setSelection(
+        			cEdit.getInt(cEdit.getColumnIndex(EntryColumns.DURATION_UNIT)));
+			etNotes.setText(
+					cEdit.getString(cEdit.getColumnIndex(EntryColumns.NOTES)));
+		} else 
+			dt = new DateTime(getApplicationContext());
+		
+		btnDate.setText(dt.date);
+		btnTime.setText(dt.time);
+	}
+	
+	private void bindEvents(){
+		btnDate.setOnClickListener(new OnClickListener() {
+            public void onClick(View v) {
+            	try {
+					showDatePickerDialog(R.id.btnDate);
+				} catch (ParseException e) {
+					e.printStackTrace();
+				}
+            }
+        });
+		
+		btnTime.setOnClickListener(new OnClickListener() {
+            public void onClick(View v) {
+            	try {
+            		showTimePickerDialog(R.id.btnTime);
+				} catch (ParseException e) {
+					e.printStackTrace();
+				}
+            }
+        });
+		
+		spnType.setOnItemSelectedListener(new OnItemSelectedListener() {
 
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -212,9 +233,7 @@ public class EntryEditor extends FragmentActivity
             @Override
             public void onNothingSelected(AdapterView<?> parent) { }
         });
-	}
-	
-	private void setupIntensity() {
+		
 		sbIntensity.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
 			int progress;
 			
@@ -259,8 +278,11 @@ public class EntryEditor extends FragmentActivity
 	
 	private final void saveEntry() throws ParseException {
         ContentValues values = new ContentValues();
-        values.put(EntryColumns.DATE, Utils.getDateTime(getApplicationContext(), 
-        		btnDate.getText().toString(), btnTime.getText().toString()));
+        
+        DateTime dt = new DateTime(btnDate.getText().toString(),
+        		btnTime.getText().toString());
+        
+        values.put(EntryColumns.DATE, dt.getTimestamp(getApplicationContext()));
         values.put(EntryColumns.TYPE, spnType.getSelectedItemId());
         values.put(EntryColumns.INTENSITY, sbIntensity.getProgress());
         values.put(EntryColumns.DURATION_TIME, etDuration.getText().toString());
@@ -286,9 +308,9 @@ public class EntryEditor extends FragmentActivity
 	
 	private final void deleteEntry() throws ParseException {       
         try {
-        	//Uri uri = getContentResolver().delete(EntryColumns.CONTENT_URI, "Id=?", selectionArgs)
+        	getContentResolver().delete(getIntent().getData(), null, null);
         	Toast.makeText(getApplicationContext(), getString(R.string.text_deleted), Toast.LENGTH_SHORT).show();
-        	//setResult(RESULT_OK, (new Intent()).setAction(uri.toString()));
+        	finish();
 
         } catch (NullPointerException e) {
             Log.e(TAG, e.getMessage());
