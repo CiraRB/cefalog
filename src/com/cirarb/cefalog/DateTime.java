@@ -12,18 +12,18 @@ public class DateTime {
 	public String date;
 	public String time;
 	
-	DateTime(Context context) {
+	public DateTime(Context context) {
 		setDateTime(context, Calendar.getInstance());
 	}
 	
-	DateTime(Context context, Long date) {
+	public DateTime(Context context, Long date) {
 		Calendar c = Calendar.getInstance();
 		c.setTimeInMillis(date + TimeZone.getDefault().getOffset(date));
 		
 		setDateTime(context, c);
 	}
 	
-	DateTime(String sDate, String sTime) {
+	public DateTime(String sDate, String sTime) {
 		this.date = sDate;
 		this.time = sTime;
 	}

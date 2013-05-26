@@ -24,6 +24,7 @@ import android.widget.EditText;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
@@ -46,6 +47,7 @@ public class EntryEditor extends FragmentActivity
     Button btnTime;
 	Spinner spnType;
 	SeekBar sbIntensity;
+	TextView tvIntensity;
 	EditText etDuration;
 	Spinner spnDuration;
 	EditText etNotes;
@@ -61,8 +63,9 @@ public class EntryEditor extends FragmentActivity
         btnTime = (Button)findViewById(R.id.btnTime);
         spnType = (Spinner) findViewById(R.id.spnType);
         sbIntensity = (SeekBar) findViewById(R.id.sbIntensity);
+        tvIntensity = (TextView) findViewById(R.id.tvIntensity);
         etDuration = (EditText)findViewById(R.id.etDuration);
-        spnDuration = (Spinner) findViewById(R.id.spnDuration);
+        spnDuration = (Spinner) findViewById(R.id.spnDuration);        
         
         if (Intent.ACTION_EDIT.equals(getIntent().getAction())) {
         	Uri uri = getIntent().getData();
@@ -78,7 +81,6 @@ public class EntryEditor extends FragmentActivity
 		bindEvents();
 	}
 	
-
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
@@ -149,11 +151,7 @@ public class EntryEditor extends FragmentActivity
 			finish();
 		}
 	}
-	
-	
-	/**
-	 * Set up the {@link android.app.ActionBar}, if the API is available.
-	 */
+
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	private void setupActionBar() {
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
@@ -198,6 +196,8 @@ public class EntryEditor extends FragmentActivity
 		
 		btnDate.setText(dt.date);
 		btnTime.setText(dt.time);
+		
+		tvIntensity.setText(String.valueOf(sbIntensity.getProgress() + 1));
 	}
 	
 	private void bindEvents(){
@@ -235,17 +235,13 @@ public class EntryEditor extends FragmentActivity
         });
 		
 		sbIntensity.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
-			int progress;
-			
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser){
-            	this.progress = progress;
+            	tvIntensity.setText(String.valueOf(progress + 1));
             }
  
             public void onStartTrackingTouch(SeekBar seekBar) { }
  
-            public void onStopTrackingTouch(SeekBar seekBar) { 
-            	Toast.makeText(getApplicationContext(), Integer.toString(progress), Toast.LENGTH_SHORT).show();
-            }
+            public void onStopTrackingTouch(SeekBar seekBar) { }
         });
 	}
 

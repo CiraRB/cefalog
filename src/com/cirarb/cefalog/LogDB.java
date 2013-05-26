@@ -77,8 +77,6 @@ public final class LogDB {
     }
     
     public static final class TypeColumns implements BaseColumns {
-    	
-        public static final String DEFAULT_SORT_ORDER = "name DESC";
         
         /**
          * The content:// style URL for this table

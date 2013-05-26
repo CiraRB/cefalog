@@ -5,7 +5,6 @@ import java.util.List;
 
 import com.cirarb.cefalog.LogDB.EntryColumns;
 import com.cirarb.cefalog.fragments.EntriesFragment;
-import com.cirarb.cefalog.fragments.MyFragment;
 
 import android.os.Bundle;
 import android.content.Intent;
@@ -48,7 +47,6 @@ public class Cefalog extends FragmentActivity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 			case R.id.action_add_entry:
-			    //startActivity(new Intent(this, EntryEditor.class));
 			    startActivity(new Intent(Intent.ACTION_INSERT, getIntent().getData()));
 			    return true;
 //		    case R.id.action_settings:
@@ -63,10 +61,6 @@ public class Cefalog extends FragmentActivity {
 		  List<Fragment> fList = new ArrayList<Fragment>();
 		  
 		  fList.add(new EntriesFragment());
-		 
-		  fList.add(MyFragment.newInstance("Fragment 1"));
-		  fList.add(MyFragment.newInstance("Fragment 2")); 
-		  fList.add(MyFragment.newInstance("Fragment 3"));
 		 
 		  return fList;
 	}

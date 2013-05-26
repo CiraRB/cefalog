@@ -138,10 +138,6 @@ public class LogDBProvider extends ContentProvider {
         		case ENTRY_ID:
         			orderBy = EntryColumns.DEFAULT_SORT_ORDER;
         			break;
-        		case TYPES:
-        		case TYPE_ID:
-        			orderBy = TypeColumns.DEFAULT_SORT_ORDER;
-        			break;
         	}
         } else {
             orderBy = sortOrder;

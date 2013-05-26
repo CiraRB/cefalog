@@ -37,30 +37,46 @@
         android:textAlignment="center" />
 
     <TextView
-        android:id="@+id/tvIntensity"
+        android:id="@+id/tvLabelIntensity"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/text_intensity"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
-    <SeekBar
-        android:id="@+id/sbIntensity"
+    <LinearLayout
+        android:id="@+id/llIntensity"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/activity_vertical_margin"
-        android:layout_marginLeft="@dimen/activity_horizontal_margin"
-        android:layout_marginRight="@dimen/activity_horizontal_margin"
-        android:max="@integer/MaxIntensity"
-        android:progress="5" />
+        android:layout_height="wrap_content" >
+
+        <SeekBar
+            android:id="@+id/sbIntensity"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/activity_vertical_margin"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:layout_weight="1"
+            android:max="@integer/MaxIntensity"
+            android:progress="@integer/HalfIntensity" />
+
+        <TextView
+            android:id="@+id/tvIntensity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textIsSelectable="false" />
+
+    </LinearLayout>
 
     <TextView
-        android:id="@+id/tvDuration"
+        android:id="@+id/tvLabelDuration"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/text_duration"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
     <LinearLayout
+        android:id="@+id/llDuration"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/activity_vertical_margin"
@@ -89,7 +105,7 @@
     <EditText
         android:id="@+id/etNotes"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:ems="10"
         android:gravity="top"
         android:hint="@string/text_anything_else"

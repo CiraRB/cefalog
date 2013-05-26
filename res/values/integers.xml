@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <integer name="NotesLines">3</integer>
-    <integer name="MaxIntensity">10</integer>
+    <integer name="MaxIntensity">9</integer>
+    <integer name="HalfIntensity">4</integer>
 </resources>
