@@ -10,9 +10,10 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@drawable/ic_launcher"
+        android:icon="@drawable/ic_launcher_cefalog"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/AppTheme" 
+        android:description="@string/text_headache_diary">
         
         <provider android:name="LogDBProvider"
             android:authorities="com.cirarb.cefalog.provider.LogDB"
@@ -25,10 +26,12 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            
         </activity>
         <activity
             android:name="EntryEditor"
             android:label="@string/app_name"
+            android:screenOrientation="portrait"
             android:parentActivityName="com.cirarb.cefalog.Cefalog" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
